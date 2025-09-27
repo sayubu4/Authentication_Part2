@@ -1,6 +1,7 @@
-// Settings/core.php
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 //for header redirection
@@ -14,7 +15,7 @@ ob_start();
 //funtion to check for login
 
 function isLoggedIn(){
-    if (!isset($_SESSION['user_id'])){
+    if (!isset($_SESSION['customer_id'])){
         return false;
 }  
 else{

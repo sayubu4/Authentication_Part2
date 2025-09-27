@@ -42,6 +42,11 @@ session_start();
 	<div class="menu-tray">
 		<?php if (isset($_SESSION['customer_id'])): ?>
 			<span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['customer_name']); ?>!</span>
+			<?php if ($_SESSION['user_role'] == 2): ?>
+				<a href="Admin/category.php" class="btn btn-sm btn-outline-primary me-2">
+					<i class="fa fa-tags"></i> Category
+				</a>
+			<?php endif; ?>
 			<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
 				<i class="fa fa-sign-out-alt"></i> Logout
 			</a>
@@ -77,8 +82,8 @@ session_start();
 									<p><strong>Location:</strong> <?php echo htmlspecialchars($_SESSION['customer_city'] . ', ' . $_SESSION['customer_country']); ?></p>
 									<p><strong>Role:</strong> 
 										<?php 
-										if ($_SESSION['user_role'] == 1) {
-											echo '<span class="badge bg-danger">Administrator</span>';
+										if ($_SESSION['user_role'] == 2) {
+											echo '<span class="badge bg-danger">Admin</span>';
 										} else {
 											echo '<span class="badge bg-primary">Customer</span>';
 										}
