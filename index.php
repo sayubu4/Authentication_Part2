@@ -52,6 +52,9 @@ session_start();
 				<a href="Admin/product.php" class="btn btn-sm btn-outline-primary me-2">
 					<i class="fa fa-tags"></i> Product
 				</a>
+				<a href="login/all_product.php" class="btn btn-sm btn-outline-primary me-2">
+					<i class="fa fa-tags"></i> All Product
+				</a>
 			<?php endif; ?>
 			<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
 				<i class="fa fa-sign-out-alt"></i> Logout
