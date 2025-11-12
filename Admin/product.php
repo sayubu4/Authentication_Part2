@@ -138,6 +138,7 @@ $products = get_all_products_ctr();
                         <label class="form-label">Product Image *</label>
                         <input type="file" class="form-control" id="productImage" name="product_image" accept="image/*" required>
                         <small class="text-muted">Image will be uploaded automatically when selected</small>
+                        <input type="hidden" id="imagePath" name="image_path" value="">
                         <div id="currentImagePreview" class="mt-2"></div>
                     </div>
 

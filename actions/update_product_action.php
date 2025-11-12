@@ -1,6 +1,10 @@
 <?php
 session_start();
 header('Content-Type: application/json');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+ini_set('display_errors', 0);
+ob_start();
 
 // Check if user is logged in and is admin
 if (!isset($_SESSION['customer_id']) || $_SESSION['user_role'] != 2) {
@@ -13,6 +17,7 @@ require_once(__DIR__ . '/../controllers/product_controller.php');
 
 // Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     // Get form data
     $product_id = isset($_POST['product_id']) ? trim($_POST['product_id']) : '';
     $cat_id = isset($_POST['product_cat']) ? trim($_POST['product_cat']) : '';
@@ -35,15 +40,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
     
-    // Update product in database
-    $result = update_product_ctr($product_id, $cat_id, $brand_id, $title, $price, $desc, $image_path, $keywords);
-    
-    if ($result) {
-        echo json_encode(['success' => true, 'message' => 'Product updated successfully!']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update product']);
+    try {
+        $result = update_product_ctr($product_id, $cat_id, $brand_id, $title, $price, $desc, $image_path, $keywords);
+        ob_clean();
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'Product updated successfully!']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update product']);
+        }
+    } catch (Throwable $e) {
+        ob_clean();
+        echo json_encode(['success' => false, 'message' => 'Exception: ' . $e->getMessage()]);
     }
 } else {
+    ob_clean();
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 ?>

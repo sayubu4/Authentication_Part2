@@ -33,10 +33,8 @@ class Category extends db_connection
         }
 
         // Insert new category
-        $stmt = $this->db->prepare(
-            "INSERT INTO categories (cat_name, created_by) VALUES (?, ?)"
-        );
-        $stmt->bind_param("si", $name, $customer_id);
+        $stmt = $this->db->prepare("INSERT INTO categories (cat_name) VALUES (?)");
+        $stmt->bind_param("s", $name);
 
         if ($stmt->execute()) {
             return $this->db->insert_id;
@@ -47,8 +45,7 @@ class Category extends db_connection
     // Get all categories created by a specific user
     public function getCategoriesByUser($customer_id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM categories WHERE created_by = ? ORDER BY cat_name ASC");
-        $stmt->bind_param("i", $customer_id);
+        $stmt = $this->db->prepare("SELECT * FROM categories ORDER BY cat_name ASC");
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
@@ -56,8 +53,8 @@ class Category extends db_connection
     // Get a specific category by ID
     public function getCategoryById($cat_id, $customer_id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM categories WHERE cat_id = ? AND created_by = ?");
-        $stmt->bind_param("ii", $cat_id, $customer_id);
+        $stmt = $this->db->prepare("SELECT * FROM categories WHERE cat_id = ?");
+        $stmt->bind_param("i", $cat_id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
@@ -76,10 +73,8 @@ class Category extends db_connection
         }
 
         // Update category
-        $stmt = $this->db->prepare(
-            "UPDATE categories SET cat_name = ? WHERE cat_id = ? AND created_by = ?"
-        );
-        $stmt->bind_param("sii", $name, $cat_id, $customer_id);
+        $stmt = $this->db->prepare("UPDATE categories SET cat_name = ? WHERE cat_id = ?");
+        $stmt->bind_param("si", $name, $cat_id);
         
         return $stmt->execute();
     }
@@ -87,8 +82,8 @@ class Category extends db_connection
     // Delete a category
     public function deleteCategory($cat_id, $customer_id)
     {
-        $stmt = $this->db->prepare("DELETE FROM categories WHERE cat_id = ? AND created_by = ?");
-        $stmt->bind_param("ii", $cat_id, $customer_id);
+        $stmt = $this->db->prepare("DELETE FROM categories WHERE cat_id = ?");
+        $stmt->bind_param("i", $cat_id);
         
         return $stmt->execute();
     }

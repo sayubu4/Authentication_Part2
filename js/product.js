@@ -199,6 +199,7 @@ $(document).ready(function() {
         $('#formTitle').html('<i class="fa fa-plus-circle"></i> Add New Product');
         $('#submitBtn').html('<i class="fa fa-save"></i> Save Product');
         $('#productImage').attr('required', 'required');
+        $('#imagePath').val('');
         isEditMode = false;
     }
 
@@ -266,4 +267,45 @@ $(document).ready(function() {
 
         return true;
     }
+
+    // Auto-upload image on selection
+    $('#productImage').on('change', function(){
+        const file = this.files && this.files[0];
+        if(!file){ return; }
+
+        // build form data for upload endpoint
+        const fd = new FormData();
+        fd.append('product_image', file);
+        // include product_id if editing so it stores under p{product_id}
+        const pid = $('#productId').val();
+        if(pid){ fd.append('product_id', pid); }
+
+        // show lightweight loading
+        $('#currentImagePreview').html('<small class="text-muted">Uploading image…</small>');
+
+        $.ajax({
+            url: '../actions/upload_product_image_action.php',
+            type: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(resp){
+                if(resp && resp.success && resp.image_path){
+                    // set hidden field for add/update actions
+                    $('#imagePath').val(resp.image_path);
+                    // preview
+                    const src = '../' + resp.image_path;
+                    $('#currentImagePreview').html(`<img src="${src}" class="img-thumbnail" style="max-width:150px;">`);
+                } else {
+                    $('#currentImagePreview').html('');
+                    Swal.fire('Error', resp && resp.message ? resp.message : 'Image upload failed', 'error');
+                }
+            },
+            error: function(){
+                $('#currentImagePreview').html('');
+                Swal.fire('Error', 'Image upload failed', 'error');
+            }
+        });
+    });
 });

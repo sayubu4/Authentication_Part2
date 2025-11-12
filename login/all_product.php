@@ -1,10 +1,6 @@
 <?php
-// all_product.php
-// A customer-facing product listing page with AJAX search, filters, grid layout, and pagination.
-
-// NOTE: the JS in this file calls ../actions/product_actions.php?action=...
-// Make sure that path is correct relative to where you put this file.
-// If actions folder location is different, update ACTIONS_URL in the script below.
+require_once(__DIR__ . '/../settings/core.php');
+if (!isLoggedIn()) { header('Location: login.php'); exit; }
 ?>
 <!doctype html>
 <html lang="en">
@@ -365,7 +361,7 @@
   }
 
   function renderCardHtml(p) {
-    const imgPath = p.product_image ? `../product/${encodeURIComponent(p.product_image)}` : 'data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120"></svg>';
+    const imgPath = p.product_image ? `../${p.product_image}` : 'data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120"></svg>';
     const title = safeText(p.product_title || 'Untitled');
     const price = typeof p.product_price !== 'undefined' && p.product_price !== null ? `${p.product_price} FBu` : 'Price N/A';
     const cat = safeText(p.cat_name || 'Uncategorized');
@@ -432,11 +428,22 @@
   }
 
   /* ---------------------------
-     Add to cart placeholder
+     Add to wishlist (cart)
   --------------------------- */
-  function handleAddToCart(productId) {
-    // placeholder — show a small toast or alert
-    alert('Add to Cart clicked for product ID: ' + productId + '\n(Placeholder — implement cart later)');
+  async function handleAddToCart(productId) {
+    try{
+      const res = await Cart.add(productId, 1);
+      if(res.status==='success'){
+        alert('Added to wishlist');
+      }else if(res.message){
+        alert(res.message);
+      }else{
+        alert('Failed to add');
+      }
+    }catch(e){
+      alert('Failed to add');
+      console.error(e);
+    }
   }
 
   /* ---------------------------
@@ -474,5 +481,6 @@
   --------------------------- */
   loadAllProducts();
   </script>
+  <script src="../js/cart.js"></script>
 </body>
 </html>

@@ -307,16 +307,21 @@ if (!$product) {
                     </div>
                 <?php endif; ?>
 
-                <button class="btn-add-cart" onclick="addToCart(<?php echo $product['product_id']; ?>)">
-                    🛒 Add to Cart
+                <button class="btn-add-cart" onclick="addToWishlist(<?php echo $product['product_id']; ?>)">
+                    ❤ Add to Wishlist
                 </button>
             </div>
         </div>
     </div>
 
+    <script src="../js/cart.js"></script>
     <script>
-        function addToCart(productId) {
-            alert('Add to cart functionality coming soon! Product ID: ' + productId);
+        async function addToWishlist(productId){
+            try{
+                const res = await Cart.add(productId, 1);
+                if(res.status==='success') alert('Added to wishlist');
+                else alert(res.message||'Failed');
+            }catch(e){ alert('Failed'); }
         }
     </script>
 </body>

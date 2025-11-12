@@ -144,5 +144,17 @@ if (!class_exists('db_connection')) {
         {
             return mysqli_insert_id($this->db);
         }
+
+        // escape helper used by some classes
+        function db_escape($value)
+        {
+            if ($this->db === null) {
+                $this->db_connect();
+            }
+            if ($this->db === false) {
+                return $value;
+            }
+            return mysqli_real_escape_string($this->db, (string)$value);
+        }
     }
 }
