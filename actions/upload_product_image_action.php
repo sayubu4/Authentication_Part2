@@ -34,26 +34,28 @@ if ($_FILES['product_image']['size'] > 5 * 1024 * 1024) {
     exit();
 }
 
-// Construct the file path: uploads/u{user_id}/p{product_id}/
-$upload_base = __DIR__ . '/../uploads/';
+// Construct the file path: Images/u{user_id}/p{product_id}/
+$upload_base = __DIR__ . '/../Images/';
 
-// Verify that uploads/ directory exists
+// Ensure that Images/ directory exists (create if missing)
 if (!is_dir($upload_base)) {
-    echo json_encode(['success' => false, 'message' => 'Upload directory does not exist. Contact administrator.']);
-    exit();
+    if (!mkdir($upload_base, 0755, true)) {
+        echo json_encode(['success' => false, 'message' => 'Failed to create Images directory. Contact administrator.']);
+        exit();
+    }
 }
 
-// Get real path of uploads/ directory for security verification
+// Get real path of Images/ directory for security verification
 $real_upload_base = realpath($upload_base);
 if ($real_upload_base === false) {
-    echo json_encode(['success' => false, 'message' => 'Upload directory path error. Contact administrator.']);
+    echo json_encode(['success' => false, 'message' => 'Images directory path error. Contact administrator.']);
     exit();
 }
 
-// Create user directory: uploads/u{user_id}/
+// Create user directory: Images/u{user_id}/
 $user_dir = $upload_base . 'u' . $user_id . '/';
 
-// Create product directory: uploads/u{user_id}/p{product_id}/
+// Create product directory: Images/u{user_id}/p{product_id}/
 $product_dir = $user_dir . 'p' . $product_id . '/';
 
 // Create directories if they don't exist
@@ -64,7 +66,7 @@ if (!file_exists($product_dir)) {
     }
 }
 
-// Verify the created directory is inside uploads/ (security check)
+// Verify the created directory is inside Images/ (security check)
 $real_product_dir = realpath($product_dir);
 if ($real_product_dir === false || strpos($real_product_dir, $real_upload_base) !== 0) {
     echo json_encode(['success' => false, 'message' => 'Invalid upload path. Security violation detected.']);
@@ -76,7 +78,7 @@ $file_extension = strtolower(pathinfo($_FILES['product_image']['name'], PATHINFO
 $filename = 'image_' . time() . '_' . uniqid() . '.' . $file_extension;
 $file_path = $product_dir . $filename;
 
-// Final verification: ensure file path is inside uploads/
+// Final verification: ensure file path is inside Images/
 $real_file_dir = realpath(dirname($file_path));
 if ($real_file_dir === false || strpos($real_file_dir, $real_upload_base) !== 0) {
     echo json_encode(['success' => false, 'message' => 'Invalid file path. Upload rejected.']);
@@ -86,7 +88,7 @@ if ($real_file_dir === false || strpos($real_file_dir, $real_upload_base) !== 0)
 // Move uploaded file to the constructed path
 if (move_uploaded_file($_FILES['product_image']['tmp_name'], $file_path)) {
     // Construct relative path for database storage
-    $relative_path = 'uploads/u' . $user_id . '/p' . $product_id . '/' . $filename;
+    $relative_path = 'Images/u' . $user_id . '/p' . $product_id . '/' . $filename;
     
     echo json_encode([
         'success' => true, 

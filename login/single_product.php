@@ -245,10 +245,17 @@ if (!$product) {
             <!-- Image Section -->
             <div class="product-image-section">
                 <?php 
-                $image_path = "../images/product/" . $product['product_image'];
-                if (!file_exists($image_path) || empty($product['product_image'])): 
+                // Use the stored relative path (e.g., Images/u{user}/p{product}/file.jpg)
+                $image_path = '';
+                if (!empty($product['product_image'])) {
+                    $candidate = "../" . ltrim($product['product_image'], '/');
+                    if (file_exists($candidate)) {
+                        $image_path = $candidate;
+                    }
+                }
+                if (empty($image_path)) {
                     $image_path = "https://via.placeholder.com/500/667eea/ffffff?text=" . urlencode($product['product_title']);
-                endif;
+                }
                 ?>
                 <img src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($product['product_title']); ?>" class="product-image">
             </div>

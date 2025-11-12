@@ -52,7 +52,7 @@ foreach ($items as $it) { $total += ((float)$it['product_price'] * (int)$it['qty
           <tr data-id="<?= (int)$it['product_id'] ?>">
             <td>
               <div style="display:flex;align-items:center;gap:10px;">
-                <img src="../product/<?= h($it['product_image']) ?>" alt="" style="width:80px;height:60px;object-fit:cover;border-radius:8px;background:#f3f4f6" onerror="this.style.display='none'" />
+                <img src="../<?= h($it['product_image']) ?>" alt="" style="width:80px;height:60px;object-fit:cover;border-radius:8px;background:#f3f4f6" onerror="this.style.display='none'" />
                 <div><?= h($it['product_title']) ?></div>
               </div>
             </td>

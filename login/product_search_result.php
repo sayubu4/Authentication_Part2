@@ -176,8 +176,9 @@ $query = isset($_GET['query']) ? trim($_GET['query']) : '';
             data.products.forEach(p => {
               const card = document.createElement('div');
               card.className = 'product-card';
+              const imgSrc = p.product_image ? `../${p.product_image}` : 'https://via.placeholder.com/300x200?text=No+Image';
               card.innerHTML = `
-                <img src="../product/${p.product_image}" alt="${p.product_title}">
+                <img src="${imgSrc}" alt="${p.product_title}">
                 <h3>${p.product_title}</h3>
                 <p><strong>Price:</strong> $${p.product_price}</p>
                 <p><strong>Category:</strong> ${p.cat_name}</p>
