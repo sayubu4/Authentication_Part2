@@ -22,8 +22,8 @@ $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
 session_set_cookie_params([
     'lifetime' => 86400, // 24 hours
     'path' => '/',
-    'domain' => $domain,
-    'secure' => $secure,
+    'domain' => '',
+    'secure' => false,
     'httponly' => true,
     'samesite' => 'Lax'
 ]);
